@@ -8,9 +8,22 @@ import RuleAccordion from "./rule-accordion"
 import { CheckCircle2, TrendingUp, Settings } from "lucide-react"
 
 interface Rule {
+  DUS_section: string
+  DUS_summary: string
   rule_source: string
   textual_rule: string
   sub_rule_text: string
+}
+
+interface GroupedRule {
+  textual_rule: string
+  sub_rules: string[]
+}
+
+interface DUSSection {
+  DUS_section: string
+  DUS_summary: string
+  rules: GroupedRule[]
 }
 
 const TAB_MAPPINGS: Record<string, { label: string; icon: React.ReactNode; color: string }> = {
@@ -86,17 +99,46 @@ export default function RulesViewer() {
     )
   }
 
-  const groupedRules = rules.reduce(
-    (acc, rule) => {
-      const source = rule.rule_source || "Unknown"
-      if (!acc[source]) {
-        acc[source] = []
+  // First, group by DUS_section, then by textual_rule
+  const sectionMap = rules.reduce((acc, rule) => {
+    const sectionKey = rule.DUS_section
+    const ruleKey = `${rule.DUS_section}|||${rule.textual_rule}`
+    
+    if (!acc[sectionKey]) {
+      acc[sectionKey] = {
+        DUS_section: rule.DUS_section,
+        DUS_summary: rule.DUS_summary,
+        rule_source: rule.rule_source,
+        rulesMap: {} as Record<string, GroupedRule>,
       }
-      acc[source].push(rule)
-      return acc
-    },
-    {} as Record<string, Rule[]>,
-  )
+    }
+    
+    if (!acc[sectionKey].rulesMap[ruleKey]) {
+      acc[sectionKey].rulesMap[ruleKey] = {
+        textual_rule: rule.textual_rule,
+        sub_rules: [],
+      }
+    }
+    
+    acc[sectionKey].rulesMap[ruleKey].sub_rules.push(rule.sub_rule_text)
+    return acc
+  }, {} as Record<string, { DUS_section: string; DUS_summary: string; rule_source: string; rulesMap: Record<string, GroupedRule> }>)
+
+  // Convert to DUSSection format and group by rule_source for tabs
+  const groupedBySource = Object.values(sectionMap).reduce((acc, section) => {
+    const source = section.rule_source || "Unknown"
+    if (!acc[source]) {
+      acc[source] = []
+    }
+    acc[source].push({
+      DUS_section: section.DUS_section,
+      DUS_summary: section.DUS_summary,
+      rules: Object.values(section.rulesMap),
+    })
+    return acc
+  }, {} as Record<string, DUSSection[]>)
+
+  const groupedRules = groupedBySource
 
   return (
     <div className="w-full">
@@ -134,7 +176,7 @@ export default function RulesViewer() {
 
                 {groupedRules[key] && groupedRules[key].length > 0 ? (
                   <div className="max-h-[700px] overflow-y-auto pr-4 space-y-2">
-                    <RuleAccordion rules={groupedRules[key]} />
+                    <RuleAccordion sections={groupedRules[key]} />
                   </div>
                 ) : (
                   <div className="text-center py-12">

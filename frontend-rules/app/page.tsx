@@ -1,12 +1,15 @@
-import RulesViewer from "@/components/rules-viewer"
-import Image from "next/image"
+"use client"
 
-export const metadata = {
-  title: "Loan Surveillance Rules | Fannie Mae",
-  description: "Fannie Mae loan surveillance rules and compliance guidelines",
-}
+import { useState } from "react"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import RulesViewer from "@/components/rules-viewer"
+import LoanConformityDashboard from "@/components/loan-conformity-dashboard"
+import Image from "next/image"
+import { BarChart3, CheckSquare } from "lucide-react"
 
 export default function Page() {
+  const [activeTab, setActiveTab] = useState("rules")
+
   return (
     <main className="min-h-screen bg-background">
       <div className="border-b border-border bg-gradient-to-r from-primary to-primary/95">
@@ -22,15 +25,44 @@ export default function Page() {
               />
             </div>
             <div>
-              <h1 className="text-4xl font-bold text-white">Loan Surveillance Rules</h1>
-              <p className="text-white/80 mt-1">Fannie Mae Compliance and Monitoring Guidelines</p>
+              <h1 className="text-4xl font-bold text-white">Loan Surveillance</h1>
+              <p className="text-white/80 mt-1">Fannie Mae Compliance and Monitoring</p>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="container mx-auto py-10 px-4">
-        <RulesViewer />
+      <div className="w-full py-10 px-4">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-2 gap-2 bg-muted p-1 mb-8 rounded-lg max-w-2xl mx-auto">
+            <TabsTrigger
+              value="rules"
+              className="flex items-center gap-2 py-3 px-6 rounded-md font-semibold transition-all duration-200 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-md"
+            >
+              <CheckSquare className="w-5 h-5" />
+              Surveillance Rules
+            </TabsTrigger>
+            <TabsTrigger
+              value="dashboard"
+              className="flex items-center gap-2 py-3 px-6 rounded-md font-semibold transition-all duration-200 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-md"
+            >
+              <BarChart3 className="w-5 h-5" />
+              Conformity Dashboard
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="rules" className="mt-0">
+            <div className="container mx-auto">
+              <RulesViewer />
+            </div>
+          </TabsContent>
+
+          <TabsContent value="dashboard" className="mt-0">
+            <div className="container mx-auto">
+              <LoanConformityDashboard />
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
     </main>
   )
