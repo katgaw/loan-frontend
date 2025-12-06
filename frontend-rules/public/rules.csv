@@ -1,0 +1,10 @@
+rule_source,textual_rule,sub_rule_text
+Income & Expenses,Rule 1: Income Verification,Verify borrower's annual income through tax returns and W2 forms for the past 2 years.
+Income & Expenses,Rule 2: Expense Analysis,Analyze monthly expenses including rent, utilities, and debt obligations.
+Income & Expenses,Rule 3: Debt-to-Income Ratio,Maintain a debt-to-income ratio below 43% for qualified mortgages.
+Valuation,Rule 1: Property Appraisal,Obtain independent property appraisal from certified appraiser.
+Valuation,Rule 2: Market Comparison,Compare property value with similar properties sold in the past 6 months.
+Valuation,Rule 3: Valuation Report,Ensure valuation report includes property condition assessment and photographs.
+Management & Exit,Rule 1: Loan Management,Monitor loan payments and flag any missed payments within 30 days.
+Management & Exit,Rule 2: Exit Strategy,Establish clear exit strategy including refinancing or sale timeline.
+Management & Exit,Rule 3: Risk Mitigation,Review and update risk assessment annually or upon material changes.
